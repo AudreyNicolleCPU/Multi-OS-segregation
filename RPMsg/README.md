@@ -112,6 +112,50 @@ For more information about it, please see :
 - https://docs.kernel.org/driver-api/mailbox.html
 
 #### Memory-region property
+```js
+/{
+  cm7: imx95-cm7 {
+      ...
+      memory-region = <&vdevbuffer>, <&vdev0vring0>, <&vdev0vring1>,
+              <&vdev1vring0>, <&vdev1vring1>, <&rsc_table>;
+      ...
+    };
+};
+```
+The different buffer declared in *memory-region* property are instanciated in the same file in *rserved-memory* node, see below : 
+reserved-memory {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		ranges;
+    ...
+		vdev0vring0: vdev0vring0@88000000 {
+			reg = <0 0x88000000 0 0x8000>;
+			no-map;
+		};
+		vdev0vring1: vdev0vring1@88008000 {
+			reg = <0 0x88008000 0 0x8000>;
+			no-map;
+		};
+		vdev1vring0: vdev1vring0@88010000 {
+			reg = <0 0x88010000 0 0x8000>;
+			no-map;
+		};
+		vdev1vring1: vdev1vring1@88018000 {
+			reg = <0 0x88018000 0 0x8000>;
+			no-map;
+		};
+		rsc_table: rsc-table@88220000 {
+			reg = <0 0x88220000 0 0x1000>;
+			no-map;
+		};
+		vdevbuffer: vdevbuffer@88020000 {
+			compatible = "shared-dma-pool";
+			reg = <0 0x88020000 0 0x100000>;
+			no-map;
+		};
+	};
+
+All this buffer are stored in the first partition of the DRAM memory for each core. 
 
 #### Bare-bones node structure
 ```js
